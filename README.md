@@ -11,15 +11,5 @@ The goal of lbml is to ...
 You can install the development version of lbml like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+devtools::install_github("https://github.com/lbraglia/lbml")
 ```
-
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-library(lbml)
-## basic example code
-```
-
