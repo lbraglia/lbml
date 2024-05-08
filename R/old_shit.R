@@ -14,3 +14,18 @@
 ##          "sums" = colSums(m[-1]))
 ## }
 ## same_predictions(best_method_submission, ens1)
+
+## to optimize further iterations see which approaches
+## yields a better cv accuracy
+cv_acc_tree <- function(res_df){
+    cv_acc_tree <- tree::tree(mean_cv_acc ~ missing_imputation
+                              + outliers_handling + predictor_used,
+                              data = res_df)
+    plot(cv_acc_tree)
+    text(cv_acc_tree, digits = 3, pretty = 500) # 500 to avoid text truncations
+    invisible(cv_acc_tree)
+}
+
+## png(file = 'results/tree.png')
+## cv_acc_tree(res1)
+## dev.off()

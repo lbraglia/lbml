@@ -73,3 +73,44 @@ naive_bayes_k <- function(train, test){
 
 
 ## TODO Knn classifier
+
+## --------------------------------------------------------------------
+
+svm <- function(train, test,
+                formula = y ~ . - id,
+                kernel = "radial",
+                cost = 1){
+    mod <- e1071::svm(formula = as.formula(formula),
+                      data = train,
+                      kernel = kernel,
+                      cost = cost)
+    test$y <- NULL
+    predict(mod, newdata = test)
+}
+
+## svm(algo_train, algo_test)
+
+
+svm_maker <- function(...) {
+    mods <- expand.grid(..., stringsAsFactors = FALSE)
+    mods$desc <- apply(mods, 1,
+                       function(x) sprintf(
+                                       "svm | formula: %s, kernel: %s, cost: %s",
+                                       x["formula"],
+                                       x["kernel"],
+                                       x["cost"]
+                                   ))
+    lapply(split(mods, mods$desc), function(x){
+        function(train, test)
+            svm(train, test,
+                formula = x$formula,
+                kernel = x$kernel,
+                cost = x$cost)
+    })
+}
+
+svms <- svm_maker("formula" = "y ~ . - id",
+                  "kernel"  = c("linear", "radial", "polynomial"),
+                  "cost" = 10^{-2:2})
+## svms[[1]](algo_train, algo_test)
+## svms[[9]](algo_train, algo_test)

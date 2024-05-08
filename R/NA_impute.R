@@ -104,7 +104,7 @@ impute_mice_long <- function(df, m = 5, ignore = c("y", "id")){
     ## number of rows is mutiplied by 5
     not_imputed <- df[names(df) %in% ignore]
     imputed <- df[names(df) %nin% ignore]
-    res <- mice::complete(mice::mice(df, m = m, method = "pmm"), action = "long")
+    res <- mice::complete(mice::mice(imputed, method = "pmm", m = m), action = "long")
     ## if there are omitted variables from imputation add them to the results
     if (ncol(not_imputed)){
         not_imputed_rep <- do.call(rbind, list(not_imputed)[rep(1, m)])

@@ -9,6 +9,6 @@
 #' @importFrom lbstat Mode
 #' @importFrom mice complete
 #' @importFrom mice mice
-#' @importFrom randomForest predict.randomForest
 #' @importFrom randomForest randomForest
+#' @importFrom gbm gbm
 NULL
