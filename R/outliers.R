@@ -1,3 +1,15 @@
+#' Ignore the outliers
+#'
+#' it returns the dataframe unchanged
+#' 
+#' @param df a data.frame with possible outliers
+#' @param ignore character vector of ignored variable in imputation
+#' @export
+outliers_none <- function(df, ignore = c("y", "id")) {
+    df
+}
+
+
 outliers_cap_worker <- function(x) {
     ## winsorize a single variable (only numeric variables,
     ## not factors, return unchanged)
