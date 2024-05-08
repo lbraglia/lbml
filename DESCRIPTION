@@ -5,6 +5,7 @@ Authors@R: person('Luca', 'Braglia', email = 'lbraglia@gmail.com', role = c('aut
 Description: Miscellaneous machine learning wrappers and boilerplate code.
 Imports: DescTools, MASS, caret, e1071, gbm, glmnet, graphics, lbmisc, mice, parallel, stats
 License: GPL (>= 3)
+LazyData: true
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
