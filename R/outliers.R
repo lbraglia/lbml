@@ -1,16 +1,4 @@
-#' Ignore the outliers
-#'
-#' it returns the dataframe unchanged
-#' 
-#' @param df a data.frame with possible outliers
-#' @param ignore character vector of ignored variable in imputation
-#' @export
-outliers_none <- function(df, ignore = c("y", "id")) {
-    df
-}
-
-
-outliers_cap_worker <- function(x) {
+outliers_cap_winsorize_worker <- function(x) {
     ## winsorize a single variable (only numeric variables,
     ## not factors, return unchanged)
     if (is.numeric(x)){
@@ -20,26 +8,55 @@ outliers_cap_worker <- function(x) {
     }
 }
 
-#' cap the outliers
+
+outliers_cap_iqr_worker <- function(x) {
+    ## winsorize a single variable (only numeric variables,
+    ## not factors, return unchanged)
+    if (is.numeric(x)){
+        iqr <- IQR(x, na.rm = TRUE)
+        q1 <- quantile(x, probs = 0.25, na.rm = TRUE)
+        q3 <- quantile(x, probs = 0.75, na.rm = TRUE)
+        lower <- q1 - 1.5 * iqr
+        upper <- q3 + 1.5 * iqr
+        ifelse(x < lower, lower, ifelse(x > upper, upper, x))
+    } else {
+        x
+    }
+}
+
+#' cap the outliers using DescTools::Winsorize
 #'
 #' @param df a data.frame with possible outliers to be capped
 #' @param ignore character vector of ignored variable in imputation
 #' @examples
 #' x <- airquality
 #' x[1,1] <- 1e06
-#' head(outliers_cap(x))
+#' head(outliers_cap_iqr(x))
 #' @export
-outliers_cap <- function(df, ignore = c("y", "id")) {
+outliers_cap_iqr <- function(df, ignore = c("y", "id")) {
     ## cap/winsorize a full dataset using the worker on each column
     searched <- names(df) %without% ignore
-    df[searched] <- lapply(df[searched], outliers_cap_worker)
+    df[searched] <- lapply(df[searched], outliers_cap_iqr_worker)
     df
 }
 
-#' identify outliers based on z scores
+
+#' cap the outliers using DescTools::Winsorize
 #'
-#' @param x a numeric variable
+#' @param df a data.frame with possible outliers to be capped
+#' @param ignore character vector of ignored variable in imputation
+#' @examples
+#' x <- airquality
+#' x[1,1] <- 1e06
+#' head(outliers_cap_winsorize(x))
 #' @export
+outliers_cap_winsorize <- function(df, ignore = c("y", "id")) {
+    ## cap/winsorize a full dataset using the worker on each column
+    searched <- names(df) %without% ignore
+    df[searched] <- lapply(df[searched], outliers_cap_winsorize_worker)
+    df
+}
+
 outliers_identifier_z <- function(x) {
     ## identify outliers in a single numeric variable based on z scores
     if (is.numeric(x)){
@@ -69,10 +86,6 @@ outliers_trim_z <- function(df, ignore = c("y", "id")){
 }
 
 
-#' identify outliers based on iqr
-#'
-#' @param x a numeric variable
-#' @export
 outliers_identifier_iqr <- function(x) {
     ## identify outliers in a single numeric variable based on IQR
     if (is.numeric(x)){
@@ -100,4 +113,16 @@ outliers_trim_iqr <- function(df, ignore = c('y',"id")){
     outlying_obs <- as.data.frame(lapply(df[searched], outliers_identifier_iqr))
     outlier_units <- rowSums(outlying_obs) >= 1
     df[!outlier_units, ]
+}
+
+
+#' Ignore the outliers
+#'
+#' it returns the dataframe unchanged
+#' 
+#' @param df a data.frame with possible outliers
+#' @param ignore character vector of ignored variable in imputation
+#' @export
+outliers_none <- function(df, ignore = c("y", "id")) {
+    df
 }
