@@ -8,8 +8,8 @@ export_submission(
   df,
   output_names = c("Id", "SalePrice"),
   input_names = c("id", "y"),
-  outdir = "submissions",
-  outfile = "submission",
+  outdir = "results",
+  outfile = "submission.csv",
   tg_bot = NULL
 )
 }

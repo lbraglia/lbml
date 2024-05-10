@@ -11,13 +11,13 @@
 export_submission <- function(df,
                               output_names = c("Id","SalePrice"),
                               input_names = c("id", "y"),
-                              outdir = "submissions",
-                              outfile = "submission",
+                              outdir = "results",
+                              outfile = "submission.csv",
                               tg_bot = NULL)
 {
     ## path and directory setup
     if (! dir.exists(outdir)) dir.create(outdir)
-    path <- sprintf("%s/%s.csv", outdir, outfile)
+    path <- sprintf("%s/%s", outdir, outfile)
     ## export
     subm <- setNames(df[input_names], output_names)
     write.csv(subm, file = path, row.names = FALSE)
