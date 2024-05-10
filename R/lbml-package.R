@@ -3,13 +3,18 @@
 
 ## usethis namespace: start
 ## usethis namespace: end
+#' @importFrom DescTools Winsorize
+#' @importFrom MASS lda
+#' @importFrom MASS stepAIC
 #' @importFrom caret preProcess
-#' @importFrom lbmisc %nin%
-#' @importFrom lbmisc %without%
-#' @importFrom lbstat Mode
+#' @importFrom e1071 svm
+#' @importFrom gbm gbm
+#' @importFrom glmnet cv.glmnet
+#' @importFrom klaR NaiveBayes
 #' @importFrom mice complete
 #' @importFrom mice mice
 #' @importFrom randomForest randomForest
-#' @importFrom gbm gbm
+#' @importFrom tree tree
+#' @importFrom xgboost xgb.DMatrix
 #' @importFrom xgboost xgboost
 NULL
