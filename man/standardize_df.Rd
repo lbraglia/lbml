@@ -18,6 +18,8 @@ standardize_df(
 \item{id_var}{id column in both the dataset}
 
 \item{outcome_var}{outcome column in both the dataset}
+
+\item{return_splitted}{return as splitted list of train and test}
 }
 \description{
 standardize data frames

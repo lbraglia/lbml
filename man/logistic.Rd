@@ -4,7 +4,7 @@
 \alias{logistic}
 \title{random forest template predictors (quntitative)}
 \usage{
-logistic(train, test, formula = y ~ .)
+logistic(train, test, formula = y ~ . - id)
 }
 \arguments{
 \item{train}{training dataset}

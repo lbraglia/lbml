@@ -4,7 +4,7 @@
 \alias{logistic_maker}
 \title{create logistics models}
 \usage{
-logistic_maker(formula_list)
+logistic_maker(formula_list = list(all = y ~ . - id))
 }
 \arguments{
 \item{formula_list}{a list of formulas to use in rf}
@@ -14,7 +14,7 @@ create logistics models
 }
 \examples{
 formulas <- list("mod1" = y ~ Pclass + Age,
-                "mod2" = y ~ Pclass + Age + SibSp + Parch + Embarked)
+                 "mod2" = y ~ Pclass + Age + SibSp + Parch + Embarked)
 logistics <- logistic_maker(formulas)
 logistics[[1]](titanic_train, titanic_test)
 logistics[[2]](titanic_train, titanic_test)

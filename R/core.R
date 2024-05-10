@@ -176,7 +176,7 @@ make_predictions <- function(perf_df = NULL,
 }
 
 
-
+#' @export
 ensemble <- function(preds = NULL,
                      w = 1,
                      which = list(1:2)){

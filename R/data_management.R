@@ -3,6 +3,7 @@
 #' @param train train dataset
 #' @param id_var id column in both the dataset
 #' @param outcome_var outcome column in both the dataset
+#' @param return_splitted return as splitted list of train and test
 #' @export
 standardize_df <- function(train, test,
                            id_var = 'Id',
