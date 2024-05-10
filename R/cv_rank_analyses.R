@@ -6,37 +6,45 @@ cv_rank_analyses <- function(datasets_functions = list(),
                              analyses = NULL,
                              metric_used = list(rmse, accuracy)[[1]],
                              order_res = c("increasing", "decreasing"),
-                             cv_k = 10,
+                             cv_k = 5,
                              rng_seed = 1,
                              outdir = "submissions",
-                             outfile = "analyses_performance.csv",
+                             outfile = sprintf("%s_analyses_performance.csv", format(Sys.time(),'%y%m%d_%H%M%S')),
                              tg_bot = NULL)
 {
     if (is.null(analyses)){
+        # if analyses are not specified, do cartesian product of the provided
         analyses <- expand.grid(
             "dataset"            = names(datasets_functions),
             "missing_imputation" = names(missing_imputation_functions),
             "outliers_handling"  = names(outliers_functions),
             "predictor_used"     = names(predictors_functions))
-    }
+    } 
     analyses <- data.frame("id" = seq_len(nrow(analyses)), analyses)
 
     # return the crossvalidation stats for a single analysis 
     cv_performance <- function(x) {# row from analyses
-        ## algorithm monitoring
-        print(x)
+        ## extract info of the analysis
+        id <- x["id"]
+        dataset_label <- x["dataset"]
+        missing_method_label <- x["missing_imputation"]
+        outliers_method_label <- x["outliers_handling"]
+        predictor_method_label <- x["predictor_used"]
+        ## monitoring
+        msg <- sprintf("Doing #%s | dataset: %s, NA: %s, outliers: %s, predictor: %s",
+                       id,
+                       dataset_label,
+                       missing_method_label,
+                       outliers_method_label,
+                       predictor_method_label)
+        cat(msg, "\n")
         if (!is.null(tg_bot)){
-            msg <- sprintf("Doing analysis: %s", paste(x, collapse = ", "))
             tg_bot$sendMessage(msg)
         }
         ## analysis setup: get functions for the analysis at hand
-        dataset_label <- x["dataset"]
         dataset_f <- datasets_functions[[dataset_label]]
-        missing_method_label <- x["missing_imputation"]
         missing_f <- missing_imputation_functions[[missing_method_label]]
-        outliers_method_label <- x["outliers_handling"]
         outlier_f <- outliers_functions[[outliers_method_label]]
-        predictor_method_label <- x["predictor_used"]
         predictor_f <- predictors_functions[[predictor_method_label]]
         ## missing and outlier handling: doit all in once starting from
         ## house_traing
@@ -71,11 +79,9 @@ cv_rank_analyses <- function(datasets_functions = list(),
     print(analyses, row.names = FALSE)
     if (!is.null(tg_bot)){
         msg <- sprintf("Starting analyses (n = %d)", nrow(analyses))
-        tg_bot$sendMessage()
+        tg_bot$sendMessage(msg)
     }
     cv_stats <- apply(analyses, 1, cv_performance)
-    if (!is.null(tg_bot))
-        tg_bot$sendMessage("CV performance analyses done.")
     ## add mean cv stat (accuracy rmse) per method as first row
     ## if (keep_foldstat){
     ##     cv_stats <- rbind(colMeans(cv_stats), cv_stats)
@@ -95,9 +101,15 @@ cv_rank_analyses <- function(datasets_functions = list(),
     res <- res[row_order, ]
     res$rank <- seq_len(nrow(res))
     ## dump results to a file
-    if (! dir.exists(outdir)) dir.create(outdir)
-    path <- sprintf("%s/%s.csv", outdir, outfile)
-    write.csv(res, file = outfile, row.names = FALSE)
+    if (!is.null(outfile)){
+        if (! dir.exists(outdir)) dir.create(outdir)
+        path <- sprintf("%s/%s.csv", outdir, outfile)
+        write.csv(res, file = path, row.names = FALSE)
+        cat("Results saved in ", outfile, ".\n")
+    }
+    if (!is.null(tg_bot)){
+        tg_bot$sendDocument(outfile)
+    }
     ## return
     res
 }

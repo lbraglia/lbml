@@ -11,4 +11,5 @@
 #' @importFrom mice mice
 #' @importFrom randomForest randomForest
 #' @importFrom gbm gbm
+#' @importFrom xgboost xgboost
 NULL

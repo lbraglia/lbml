@@ -1,14 +1,3 @@
-outliers_cap_winsorize_worker <- function(x) {
-    ## winsorize a single variable (only numeric variables,
-    ## not factors, return unchanged)
-    if (is.numeric(x)){
-        DescTools::Winsorize(x, na.rm = TRUE)
-    } else {
-        x
-    }
-}
-
-
 outliers_cap_iqr_worker <- function(x) {
     ## winsorize a single variable (only numeric variables,
     ## not factors, return unchanged)
@@ -40,6 +29,17 @@ outliers_cap_iqr <- function(df, ignore = c("y", "id")) {
     df
 }
 
+## --------------------------------------------------------------------
+
+outliers_cap_winsorize_worker <- function(x) {
+    ## winsorize a single variable (only numeric variables,
+    ## not factors, return unchanged)
+    if (is.numeric(x)){
+        DescTools::Winsorize(x, na.rm = TRUE)
+    } else {
+        x
+    }
+}
 
 #' cap the outliers using DescTools::Winsorize
 #'
@@ -56,6 +56,8 @@ outliers_cap_winsorize <- function(df, ignore = c("y", "id")) {
     df[searched] <- lapply(df[searched], outliers_cap_winsorize_worker)
     df
 }
+
+## --------------------------------------------------------------------
 
 outliers_identifier_z <- function(x) {
     ## identify outliers in a single numeric variable based on z scores
@@ -84,6 +86,8 @@ outliers_trim_z <- function(df, ignore = c("y", "id")){
     outlier_units <- rowSums(outlying_obs) >= 1
     df[!outlier_units, ]
 }
+
+## --------------------------------------------------------------------
 
 
 outliers_identifier_iqr <- function(x) {
@@ -115,6 +119,7 @@ outliers_trim_iqr <- function(df, ignore = c('y',"id")){
     df[!outlier_units, ]
 }
 
+## --------------------------------------------------------------------
 
 #' Ignore the outliers
 #'

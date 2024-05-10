@@ -1,21 +1,21 @@
 #' @export
-xgb <- function(train, test){
+xgb <- function(train, test,
+                formula = y ~ . - id,
+                objective = "reg:squarederror",  # For regression
+                eval_metric = "rmse"             # Evaluation metric: Root Mean Squared Error
+                ){
     ## browser()
-    target_column <- "y"
-    predictors <- names(train) %without% c("id", "y")
-    ## Convert data to DMatrix format
-    dtrain <- xgboost::xgb.DMatrix(data = as.matrix(train[, predictors]),
-                                   label = train[, target_column])
+    y_train <- train$y
     test$y <- 1
-    dtest <- xgboost::xgb.DMatrix(data = as.matrix(test[, predictors]),
-                                  label = test[, target_column])
-    ## Set parameters for XGBoost
-    params <- list(
-        objective = "reg:squarederror",  # For regression
-        eval_metric = "rmse"              # Evaluation metric: Root Mean Squared Error
-    )
-    ## Train the XGBoost model
-    xgb_model <- xgboost::xgboost(params = params, data = dtrain, nrounds = 100)
-    ## Make predictions on the test set
-    predict(xgb_model, dtest)
+    y_test <- test$y
+    x_train <- model.matrix(formula, data = train)[, -1]
+    x_test <- model.matrix(formula, data = test)[, -1]
+    ## Convert to DMatrix format
+    train_data <- xgboost::xgb.DMatrix(data = as.matrix(x_train), label = y_train)
+    test_data <- xgboost::xgb.DMatrix(data = as.matrix(x_test), label = y_test)
+    ## set params, do estimate on train and obtain prediction on test
+    params <- list(objective = objective, eval_metric = eval_metric)
+    xgb_model <- xgboost::xgboost(params = params, data = train_data, nrounds = 100)
+    predict(xgb_model, test_data)
 }
+
