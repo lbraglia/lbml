@@ -3,7 +3,8 @@ Title: ML wrappers and boilerplate code
 Version: 0.0.1
 Authors@R: person('Luca', 'Braglia', email = 'lbraglia@gmail.com', role = c('aut', 'cre'))
 Description: Miscellaneous machine learning wrappers and boilerplate code.
-Imports: DescTools, MASS, caret, e1071, gbm, glmnet, klaR, mice, randomForest, tree, xLicense: GPL (>= 3)
+Imports: DescTools, MASS, caret, e1071, gbm, glmnet, klaR, mice, randomForest, tree, xgboost
+License: GPL (>= 3)
 LazyData: true
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
