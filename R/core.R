@@ -108,7 +108,7 @@ rank_analyses <- function(analysis_functions = NULL,
         if (! dir.exists(outdir)) dir.create(outdir)
         path <- sprintf("%s/%s", outdir, outfile)
         write.csv(res, file = path, row.names = FALSE)
-        cat("Results saved in ", outfile, ".\n")
+        cat("Results saved in ", outfile, ".\n", sep = "")
         if (!is.null(tg_bot)){
             tg_bot$sendDocument(path)
         }
@@ -173,4 +173,32 @@ make_predictions <- function(perf_df = NULL,
         res
     }
     apply(perf_df, 1, worker)
+}
+
+
+
+ensemble <- function(preds = NULL,
+                     w = 1,
+                     which = list(1:2)){
+    if (length(preds) < 2)
+        stop("At least two predictions to be ensembled are needed.")
+    ## add the prediction rank to the outcome names eg y_1
+    preds <- Map(function(x, xn){
+        names(x)[2] <- paste0(names(x)[2], "_", xn)
+        x
+    }, preds, as.list(names(preds)))
+    ## get the units ids
+    ids <- sort(unique(unlist(lapply(preds, function(x) x["id"]))))
+    id_df <- setNames(data.frame(ids), "id")
+    ## merge the predictions for the considered ensemble
+    names(which) <- lapply(which, function(x) paste0(x, collapse = "_"))
+    ensemble_dfs <- lapply(which, function(sel){
+        ens <- Reduce(f = function(x, y){
+            merge(x, y, by = "id", all.x = TRUE)
+        }, x = preds[sel], init = id_df)
+        ens['y'] <- apply(ens[, -1], 1, weighted.mean, w = w[sel], na.rm = TRUE)
+        ## ens[c('id', 'y')]
+        ens
+    })
+    ensemble_dfs
 }
