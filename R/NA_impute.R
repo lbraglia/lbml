@@ -1,3 +1,5 @@
+Mode <- function(x) names(which.max(table(x)))
+
 impute_factor <- function(x){
     ## use the median if ordered or mode otherwise; return numeric
     ## variables unchanged as well
@@ -8,7 +10,7 @@ impute_factor <- function(x){
                 med <- quantile(x, probs = 0.5, na.rm = TRUE, type = 1)
                 x[nas] <- as.character(med)
             } else {
-                mod <- lbstat::Mode(x)
+                mod <- Mode(x)
                 x[nas] <- mod
             }
         }
