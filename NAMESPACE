@@ -3,6 +3,7 @@
 export(accuracy)
 export(boosting)
 export(boosting_maker)
+export(cv_rank_analyses)
 export(export_submission)
 export(impute_bag)
 export(impute_knn)

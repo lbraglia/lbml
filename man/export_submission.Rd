@@ -8,8 +8,8 @@ export_submission(
   df,
   output_names = c("Id", "SalePrice"),
   input_names = c("id", "y"),
-  directory = "submissions",
-  fname = "submission",
+  outdir = "submissions",
+  outfile = "submission",
   tg_bot = NULL
 )
 }
@@ -20,12 +20,12 @@ export_submission(
 
 \item{input_names}{column names to consider in the df data.frame}
 
-\item{directory}{where to export}
-
-\item{fname}{file name}
+\item{outfile}{file name}
 
 \item{tg_bot}{telegram::TGBot object already set up with default
 chat_id where the file will be posted as well}
+
+\item{directory}{where to export}
 }
 \description{
 Export kaggle competition submission
